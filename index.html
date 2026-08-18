@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Andrei Enters 21st Chapter | Birthday Invitation</title>
+    <title>The21stChapterofAndrei</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -229,7 +229,7 @@
             z-index: 1;
         }
 
-        /* 2. Letter Card (Hidden perfectly between Back and Front) */
+        /* 2. Letter Card */
         .letter-card {
             position: absolute;
             left: 6%;
@@ -265,7 +265,7 @@
             margin-top: 0.4rem;
         }
 
-        /* 3. Envelope Front Pocket (Covers the bottom, left, and right of the letter) */
+        /* 3. Envelope Front Pocket */
         .envelope-front {
             position: absolute;
             inset: 0;
@@ -275,7 +275,6 @@
             clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
         }
 
-        /* Fold lines for front pocket to look authentic */
         .envelope-front::before {
             content: "";
             position: absolute;
@@ -305,7 +304,6 @@
             transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1), z-index 0s 0s;
         }
 
-        /* Outline effect for the top flap */
         .envelope-flap::after {
             content: "";
             position: absolute;
@@ -322,11 +320,8 @@
             width: 76px;
             height: 76px;
             transform: translate(-50%, -50%);
-            /* Imperfect circle to mimic pooled melted wax */
             border-radius: 48% 52% 51% 49% / 51% 49% 52% 48%;
-            /* Deep, glossy gradient */
             background: radial-gradient(circle at 35% 25%, #5a5a62 0%, #202024 40%, #0d0d0f 100%);
-            /* Layered shadows for 3D thickness and rim highlights */
             box-shadow:
                 0 12px 24px rgba(0, 0, 0, 0.8),
                 inset 0 4px 6px rgba(255, 255, 255, 0.25),
@@ -339,14 +334,12 @@
             font-weight: 800;
             font-size: 1.6rem;
             color: #e4e4e7;
-            /* Engraved/Debossed text effect */
             text-shadow: -1px -1px 2px rgba(0, 0, 0, 0.9), 1px 1px 1px rgba(255, 255, 255, 0.2);
             cursor: pointer;
             z-index: 6;
             transition: transform 0.35s ease, opacity 0.5s ease;
         }
 
-        /* Inner stamped impression ring */
         .wax-seal::after {
             content: "";
             position: absolute;
@@ -366,7 +359,7 @@
         /* Open State Animations */
         .envelope-scene.is-open .envelope-flap {
             transform: rotateX(180deg);
-            z-index: 2; /* Drops seamlessly behind the letter */
+            z-index: 2;
             transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1), z-index 0s 0.35s;
         }
 
@@ -377,10 +370,9 @@
         }
 
         .envelope-scene.is-open .letter-card {
-            transform: translateY(-50%); /* Slides smoothly out the top */
+            transform: translateY(-50%);
         }
 
-        /* Seal "crack" wiggle played right before the flap opens */
         @keyframes sealCrack {
             0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
             30% { transform: translate(-50%, -50%) scale(1.18) rotate(-6deg); }
@@ -1287,24 +1279,42 @@
 
     <!-- Chapter One Section (1st Birthday) -->
     <section id="chapter-one" class="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-        <div data-aos="fade-up" class="glass-card rounded-[2.5rem] p-8 sm:p-16 border-silver-glow relative overflow-hidden flex flex-col md:flex-row items-center gap-12">
+        <div data-aos="fade-up" class="glass-card rounded-[2.5rem] p-8 sm:p-16 border-silver-glow relative overflow-hidden flex flex-col lg:flex-row items-center gap-12">
             <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-zinc-700/10 rounded-full blur-3xl pointer-events-none"></div>
 
-            <div class="w-full md:w-1/2 space-y-6 relative z-10" data-aos="fade-right">
+            <div class="w-full lg:w-1/2 space-y-5 relative z-10" data-aos="fade-right">
                 <span class="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Where It All Began</span>
                 <h2 class="font-cinzel text-3xl sm:text-5xl font-bold text-zinc-100 uppercase leading-tight">Chapter<br/>One</h2>
                 <div class="w-16 h-px bg-gradient-to-r from-zinc-400 to-transparent my-6"></div>
-                <p class="text-zinc-300 text-sm leading-loose tracking-wide">
-                    From a single candle to twenty-one. Before stepping into this grand new chapter, we look back at the very beginning. Every great story has a beautiful start.
-                </p>
+                <div class="text-zinc-300 text-sm leading-loose tracking-wide space-y-4">
+                    <p>My mom once told me that my first birthday was fun and unforgettable. As I grew older, I experienced countless moments, learned many lessons, and faced different chapters that helped shape me into the person I am today.</p>
+                    <p>Now, as I enter the 21st chapter of my life, I would love for you to be part of this special moment. I warmly invite you to join me as I celebrate my 21st birthday. Your presence would truly mean so much to me because you are one of the people I have chosen to share this milestone with.</p>
+                    <p>I hope that together, we can make this celebration fun, exciting, and unforgettable, a moment that we will look back on and remember as truly one for the books.</p>
+                    <p>More than celebrating another year of my life, I also want to celebrate the people who have made my journey meaningful. Your presence, your love, and the memories we have shared are all part of the story that brought me here.</p>
+                    <p>So, as I turn 21, I hope you will celebrate with me, not only because it is my birthday, but because your love for me deserves to be celebrated, too.</p>
+                    <p>I would be truly happy to have you there as I begin this new chapter of my life.</p>
+                </div>
             </div>
 
-            <div class="w-full md:w-1/2 relative z-10" data-aos="fade-left">
-                <div class="relative w-full max-w-sm mx-auto aspect-[4/5] rounded-2xl overflow-hidden glass-card p-2 transform md:rotate-3 hover:rotate-0 transition-all duration-500 shadow-2xl group cursor-pointer">
-                    <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=800&auto=format&fit=crop" alt="Andrei's 1st Birthday" class="w-full h-full object-cover rounded-xl filter grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent pointer-events-none rounded-xl"></div>
-                    <div class="absolute bottom-6 left-0 right-0 text-center pointer-events-none transition-transform duration-500 group-hover:translate-y-[-4px]">
-                        <span class="font-cinzel text-lg tracking-[0.3em] text-zinc-100 uppercase font-light">Age One</span>
+            <div class="w-full lg:w-1/2 relative z-10 min-h-[28rem] sm:min-h-[34rem] flex items-center justify-center mt-8 lg:mt-0" data-aos="fade-left">
+                <!-- Two Overlapping Images -->
+                <div class="relative w-full max-w-md h-full">
+                    <!-- Image 1 (Back Left) -->
+                    <div class="absolute top-0 left-0 w-[65%] aspect-[4/5] rounded-2xl overflow-hidden glass-card p-2 transform -rotate-6 hover:rotate-0 hover:z-20 hover:scale-105 transition-all duration-500 shadow-2xl group cursor-pointer">
+                        <img src="images/first_bday1.jpg" alt="Andrei's 1st Birthday - 1" class="w-full h-full object-cover rounded-xl filter grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent pointer-events-none rounded-xl"></div>
+                        <div class="absolute bottom-4 left-0 right-0 text-center pointer-events-none transition-transform duration-500 group-hover:translate-y-[-4px]">
+                            <span class="font-cinzel text-sm sm:text-base tracking-[0.2em] text-zinc-100 uppercase font-light">Age One</span>
+                        </div>
+                    </div>
+
+                    <!-- Image 2 (Front Right) -->
+                    <div class="absolute bottom-0 right-0 w-[65%] aspect-[4/5] rounded-2xl overflow-hidden glass-card p-2 transform rotate-6 hover:rotate-0 hover:z-20 hover:scale-105 transition-all duration-500 shadow-2xl group cursor-pointer z-10">
+                        <img src="images/first_bday.jpg" alt="Andrei's 1st Birthday - 2" class="w-full h-full object-cover rounded-xl filter grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent pointer-events-none rounded-xl"></div>
+                        <div class="absolute bottom-4 left-0 right-0 text-center pointer-events-none transition-transform duration-500 group-hover:translate-y-[-4px]">
+                            <span class="font-cinzel text-sm sm:text-base tracking-[0.2em] text-zinc-100 uppercase font-light">The Beginning</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1349,9 +1359,15 @@
         <div data-aos="fade-up" class="glass-card rounded-[2.5rem] p-10 sm:p-16 border-silver-glow relative overflow-hidden text-center">
             <div class="absolute -top-6 -left-2 sm:-top-10 sm:-left-4 text-[9rem] sm:text-[13rem] font-playfair italic font-bold text-white/[0.04] leading-none select-none pointer-events-none">&rdquo;</div>
             <span class="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400 divider-gem">In Andrei's Words</span>
-            <p class="font-playfair italic text-xl sm:text-2xl md:text-3xl text-zinc-100 leading-relaxed max-w-3xl mx-auto mt-8 relative z-10">
-                Twenty-one years in, and I'm still amazed by the people who've walked this road with me. This night is my way of saying thank you — for the memories behind us, and the ones we're about to make together.
-            </p>
+
+            <div class="font-playfair italic text-lg sm:text-xl md:text-2xl text-zinc-100 leading-relaxed max-w-4xl mx-auto mt-8 relative z-10 space-y-6">
+                <p>As I enter the 21st chapter of my life, I would love for you to be part of this special moment. I warmly invite you to join me as I celebrate my 21st birthday. Your presence would truly mean so much to me because you are one of the people I have chosen to share this milestone with.</p>
+                <p>I hope that together, we can make this celebration fun, exciting, and unforgettable, a moment that we will look back on and remember as truly one for the books.</p>
+                <p>More than celebrating another year of my life, I also want to celebrate the people who have made my journey meaningful. Your presence, your love, and the memories we have shared are all part of the story that brought me here.</p>
+                <p>So, as I turn 21, I hope you will celebrate with me, not only because it is my birthday, but because your love for me deserves to be celebrated, too.</p>
+                <p>I would be truly happy to have you there as I begin this new chapter of my life.</p>
+            </div>
+
             <div class="flex items-center justify-center gap-4 mt-10 relative z-10">
                 <span class="w-10 h-px bg-zinc-600"></span>
                 <span class="font-cinzel text-sm tracking-[0.3em] uppercase text-zinc-300">Andrei</span>
@@ -1394,65 +1410,137 @@
         <div class="relative pl-10 sm:pl-14">
             <div class="absolute left-[6px] sm:left-[10px] top-2 bottom-2 w-px bg-gradient-to-b from-transparent via-zinc-700 to-transparent"></div>
 
-            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up" data-aos-delay="0">
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
                 <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
                 <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">4:00 PM</span>
-                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Arrival &amp; Cocktail Hour</h3>
-                <p class="text-zinc-400 text-sm leading-relaxed">Welcome drinks and mingling as guests settle in.</p>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Guest Arrival</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Welcome drinks and mingling as guests settle into the venue.</p>
             </div>
-            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up" data-aos-delay="60">
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
                 <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
                 <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">4:30 PM</span>
-                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Grand Entrance</h3>
-                <p class="text-zinc-400 text-sm leading-relaxed">Andrei makes his entrance to open the celebration.</p>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Photo Session & Trivia Questions</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">A quick photoshoot and fun trivia while waiting for the program to begin.</p>
             </div>
-            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up" data-aos-delay="120">
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
                 <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
                 <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">5:00 PM</span>
-                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Opening Toast</h3>
-                <p class="text-zinc-400 text-sm leading-relaxed">A few words of welcome and a toast to the night ahead.</p>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Opening Prayer</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">A moment of grace to bless the evening.</p>
             </div>
-            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up" data-aos-delay="180">
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
+                <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
+                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">5:05 PM</span>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Opening Remarks / Program Proper</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Officially welcoming everyone to the 21st chapter celebration.</p>
+            </div>
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
+                <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
+                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">5:15 PM</span>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Grand Entrance of the Debutant</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Andrei makes his grand entrance to officially open the night.</p>
+            </div>
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
                 <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
                 <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">5:30 PM</span>
-                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Dinner Service</h3>
-                <p class="text-zinc-400 text-sm leading-relaxed">A seated dinner begins as the evening settles in.</p>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Intermission Number</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">A special performance to entertain the guests.</p>
             </div>
-            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up" data-aos-delay="240">
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
+                <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
+                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">5:45 PM</span>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Game 1</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Let the fun begin with an exciting party game.</p>
+            </div>
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
                 <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
                 <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">6:15 PM</span>
-                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">21 Gifts Presentation</h3>
-                <p class="text-zinc-400 text-sm leading-relaxed">A cherished 21st birthday tradition, one gift at a time.</p>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">21 Gifts</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">A cherished tradition, presenting gifts and well wishes one at a time.</p>
             </div>
-            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up" data-aos-delay="300">
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
                 <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
                 <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">6:45 PM</span>
-                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Candle &amp; Blue Bills Ceremony</h3>
-                <p class="text-zinc-400 text-sm leading-relaxed">Symbolic gestures marking this milestone year.</p>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Photo Op</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Capturing memories with Andrei before the main course.</p>
             </div>
-            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up" data-aos-delay="360">
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
                 <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
-                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">7:15 PM</span>
-                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Video Tribute</h3>
-                <p class="text-zinc-400 text-sm leading-relaxed">A look back at the years — friends, family, and memories.</p>
+                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">7:00 PM</span>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Dinner Time</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">A sumptuous feast for everyone to enjoy.</p>
             </div>
-            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up" data-aos-delay="420">
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
                 <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
-                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">7:45 PM</span>
-                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Open Dance Floor</h3>
-                <p class="text-zinc-400 text-sm leading-relaxed">The celebration moves to the floor — all are welcome.</p>
+                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">8:00 PM</span>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">21 Blue Bills</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">A symbolic tradition of prosperity and independence.</p>
             </div>
-            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up" data-aos-delay="480">
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
+                <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
+                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">8:30 PM</span>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Message of the Family</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Heartfelt words from the people who know him best.</p>
+            </div>
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
+                <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
+                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">8:45 PM</span>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Debutant's Thanksgiving Speech</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Andrei's message of gratitude to everyone who came.</p>
+            </div>
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
                 <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
                 <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">9:00 PM</span>
-                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Cake Cutting</h3>
-                <p class="text-zinc-400 text-sm leading-relaxed">A sweet close to the evening's formalities.</p>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Birthday Cake Ceremony</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Making a wish and blowing out the candles.</p>
             </div>
-            <div class="timeline-item relative" data-aos="fade-up" data-aos-delay="540">
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
                 <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
-                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">10:00 PM</span>
-                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Last Dance &amp; Send-off</h3>
-                <p class="text-zinc-400 text-sm leading-relaxed">The night winds down with one final dance together.</p>
+                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">9:15 PM</span>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Photo Op of Whole</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">One big group picture to commemorate the night.</p>
+            </div>
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
+                <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
+                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">9:30 PM</span>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Closing Prayer</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">A final prayer of thanks for a beautiful evening.</p>
+            </div>
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
+                <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
+                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">9:35 PM</span>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Closing Remarks</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Final words before the party officially shifts gears.</p>
+            </div>
+
+            <div class="timeline-item relative pb-10 sm:pb-12" data-aos="fade-up">
+                <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
+                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">9:40 PM</span>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">End of Program</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">The formal celebration concludes.</p>
+            </div>
+
+            <div class="timeline-item relative" data-aos="fade-up">
+                <span class="absolute -left-10 sm:-left-14 top-1 timeline-dot"></span>
+                <span class="font-cinzel text-xs text-zinc-500 tracking-[0.2em] uppercase">9:45 PM Onwards</span>
+                <h3 class="font-cinzel text-lg text-zinc-100 uppercase tracking-wide mt-1 mb-1">Open Floor for Socials</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">The dance floor opens—time to party the night away.</p>
             </div>
         </div>
     </section>
@@ -1498,18 +1586,18 @@
                 <span class="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Dress Code Guide</span>
                 <h2 class="shimmer-text font-cinzel text-3xl sm:text-5xl font-bold uppercase mt-4 mb-6 tracking-wide">Monochrome Elegance</h2>
                 <p class="text-zinc-300 text-sm max-w-2xl mx-auto mb-12 leading-loose">
-                    To complement the cinematic theme of the evening, guests are respectfully requested to dress in formal or semi-formal attire strictly adhering to the event color palette.
+                    To complement the cinematic theme of the evening, guests are respectfully requested to dress in <strong>smart casual or casual attire</strong> strictly adhering to the event color palette. Let's keep it stylish but relaxed so the debutant can truly shine.
                 </p>
 
                 <!-- Attire reference photos -->
                 <div class="grid sm:grid-cols-2 gap-6 sm:gap-8 mb-10 text-left">
                     <div class="gallery-card h-80 sm:h-[26rem]" data-aos="fade-up" data-aos-delay="0">
-                        <img class="gallery-img" src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=800&auto=format&fit=crop" alt="Men's formal monochrome attire reference" />
-                        <div class="gallery-overlay"><span class="gallery-caption">For Him — Tailored Suit</span></div>
+                        <img class="gallery-img" src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=800&auto=format&fit=crop" alt="Men's smart casual monochrome attire reference" />
+                        <div class="gallery-overlay"><span class="gallery-caption">For Him — Smart Casual</span></div>
                     </div>
                     <div class="gallery-card h-80 sm:h-[26rem]" data-aos="fade-up" data-aos-delay="120">
-                        <img class="gallery-img" src="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800&auto=format&fit=crop" alt="Women's formal monochrome attire reference" />
-                        <div class="gallery-overlay"><span class="gallery-caption">For Her — Evening Dress</span></div>
+                        <img class="gallery-img" src="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800&auto=format&fit=crop" alt="Women's smart casual monochrome attire reference" />
+                        <div class="gallery-overlay"><span class="gallery-caption">For Her — Chic Casual</span></div>
                     </div>
                 </div>
 
@@ -1528,7 +1616,7 @@
                     </div>
                 </div>
                 <div class="inline-block border-t border-b border-zinc-800 py-3 px-8">
-                    <p class="text-xs text-zinc-300 italic tracking-widest uppercase">Formal Suits, Blazers, Cocktail Dresses &amp; Elegant Evening Wear</p>
+                    <p class="text-xs text-zinc-300 italic tracking-widest uppercase">Smart Casual Button-Downs, Polos, Casual Dresses &amp; Clean Denim</p>
                 </div>
             </div>
         </div>
@@ -1548,42 +1636,42 @@
                     <span>What should I wear?</span>
                     <i class="fa-solid fa-plus faq-icon"></i>
                 </button>
-                <div class="faq-answer"><p>Formal or semi-formal attire in shades of black, white, or slate gray — see the Attire section above for reference looks.</p></div>
+                <div class="faq-answer"><p>Any black or white outfit will do. Please avoid wearing any other colors to maintain the elegant uniformity of the celebration.</p></div>
             </div>
             <div class="faq-item">
                 <button class="faq-question" type="button">
                     <span>Is parking available?</span>
                     <i class="fa-solid fa-plus faq-icon"></i>
                 </button>
-                <div class="faq-answer"><p>Yes, on-site parking is available for guests at Mula De Illuminada.</p></div>
+                <div class="faq-answer"><p>Yes! Mula De Illuminada features a wide parking area that provides convenient access for all our guests.</p></div>
             </div>
             <div class="faq-item">
                 <button class="faq-question" type="button">
                     <span>Can I bring a plus-one?</span>
                     <i class="fa-solid fa-plus faq-icon"></i>
                 </button>
-                <div class="faq-answer"><p>Please indicate your total number of guests in the RSVP form below so we can plan seating accordingly.</p></div>
+                <div class="faq-answer"><p>It would be great if you could kindly ask the debutant first before bringing a plus-one, so we can ensure proper seating and accommodations.</p></div>
             </div>
             <div class="faq-item">
                 <button class="faq-question" type="button">
                     <span>What if I can't make it?</span>
                     <i class="fa-solid fa-plus faq-icon"></i>
                 </button>
-                <div class="faq-answer"><p>We'll miss you — just let us know through the RSVP form so we can plan accordingly.</p></div>
+                <div class="faq-answer"><p>It would be greatly appreciated if the invitation sent to you is granted. However, if you genuinely cannot make it, please let us know through the RSVP form below.</p></div>
             </div>
             <div class="faq-item">
                 <button class="faq-question" type="button">
                     <span>Do I need to bring a gift?</span>
                     <i class="fa-solid fa-plus faq-icon"></i>
                 </button>
-                <div class="faq-answer"><p>Your presence is the priority. If you'd like to take part in the 21 Gifts or 21 Blue Bills tradition, you're most welcome to.</p></div>
+                <div class="faq-answer"><p>It is not mandatory to bring a gift, but it will be highly appreciated if you choose to bring one.</p></div>
             </div>
             <div class="faq-item">
                 <button class="faq-question" type="button">
                     <span>Is there a hashtag for photos?</span>
                     <i class="fa-solid fa-plus faq-icon"></i>
                 </button>
-                <div class="faq-answer"><p>Yes — tag your posts so every moment can be found in one place. Details just below.</p></div>
+                <div class="faq-answer"><p>The official hashtag is <strong>#The21stChapterofAndrei</strong>, but what matters most to us is your presence at the celebration.</p></div>
             </div>
         </div>
     </section>
@@ -1593,7 +1681,7 @@
         <div data-aos="zoom-in-up" class="glass-card rounded-[2.5rem] p-10 sm:p-16 border-silver-glow relative overflow-hidden">
             <i class="fa-solid fa-camera-retro text-2xl text-zinc-400 mb-6 block"></i>
             <span class="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Capture the Night</span>
-            <h2 class="shimmer-text font-cinzel text-3xl sm:text-5xl font-bold uppercase mt-4 mb-8 tracking-wide">#The21stChapter</h2>
+            <h2 class="shimmer-text font-cinzel text-3xl sm:text-4xl md:text-5xl font-bold uppercase mt-4 mb-8 tracking-wide">#The21stChapterofAndrei</h2>
             <p class="text-zinc-400 text-sm max-w-md mx-auto mb-8 leading-loose">Tag your photos and stories from the celebration — we'll be looking out for every single one.</p>
             <button id="copy-hashtag-btn" class="hashtag-copy-btn magnetic-btn inline-flex items-center px-8 py-3.5 rounded-full border border-zinc-600 bg-zinc-900/60 text-zinc-200 text-xs font-bold uppercase tracking-[0.15em] transition-all duration-300">
                 <i class="fa-regular fa-copy mr-3"></i> <span id="copy-hashtag-label">Copy Hashtag</span>
@@ -2095,7 +2183,8 @@
             if (!btn) return;
             btn.addEventListener('click', async () => {
                 try {
-                    await navigator.clipboard.writeText('#The21stChapter');
+                    // Updated the text inside the quotes to the new hashtag
+                    await navigator.clipboard.writeText('#The21stChapterofAndrei');
                 } catch (err) {
                 }
                 btn.classList.add('copied');
