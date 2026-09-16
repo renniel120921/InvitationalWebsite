@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <title>RSVP Administration — The 21st Chapter of Andrei</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-deep: #08080a;
+            --bg-card: rgba(18, 18, 22, 0.78);
+            --bg-card-hover: rgba(26, 26, 32, 0.85);
+            --bg-input: rgba(12, 12, 15, 0.85);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-silver: rgba(255, 255, 255, 0.18);
+            --border-focus: rgba(255, 255, 255, 0.6);
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --font-cinzel: 'Cinzel', serif;
+            --font-montserrat: 'Montserrat', sans-serif;
+            --font-playfair: 'Playfair Display', serif;
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+            --radius-full: 9999px;
+            --shadow-card: 0 20px 40px -15px rgba(0, 0, 0, 0.8), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+            --shadow-glow: 0 0 30px rgba(255, 255, 255, 0.08);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            font-family: var(--font-montserrat);
+            font-size: 15px;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Ambient Background Glow */
+        .ambient-glow {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.25;
+        }
+        .ambient-glow-top {
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(800px, 90vw);
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(200, 200, 220, 0.05) 50%, transparent 80%);
+        }
+        .ambient-glow-bottom {
+            bottom: -200px;
+            right: 5%;
+            width: min(600px, 80vw);
+            height: 500px;
+            background: radial-gradient(circle, rgba(160, 160, 190, 0.06) 0%, transparent 75%);
+        }
+
+        /* Focus styles for keyboard accessibility */
+        :focus-visible {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+
+        /* Buttons & Inputs */
+        button, input, select, textarea {
+            font-family: inherit;
+            font-size: 1rem;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+
+        /* Shared Card Style */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ================= INITIAL LOADER ================= */
+        #initial-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: var(--bg-deep);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        #initial-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .loader-text {
+            font-family: var(--font-cinzel);
+            font-size: 0.9rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ================= AUTH SECTION ================= */
+        #auth-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.25rem;
+            position: relative;
+            z-index: 1;
+        }
+        #auth-section.hidden {
+            display: none;
+        }
+        .auth-card {
+            width: 100%;
+            max-width: 440px;
+            padding: 2.75rem 2.25rem;
+            border-radius: var(--radius-xl);
+            border-color: var(--border-silver);
+            box-shadow: var(--shadow-card), var(--shadow-glow);
+            text-align: center;
+        }
+        .brand-eyebrow {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .auth-title {
+            font-family: var(--font-cinzel);
+            font-size: 1.85rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin-bottom: 0.75rem;
+        }
+        .auth-divider {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            margin: 0 auto 2rem;
+        }
+
+        /* Auth Form Controls */
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            text-align: left;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .form-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .auth-input {
+            width: 100%;
+            height: 52px;
+            padding: 0 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-silver);
+            border-radius: var(--radius-md);
+            color: #ffffff;
+            font-size: 16px; /* Prevents auto-zoom on iOS */
+            transition: border-color 0.25s, box-shadow 0.25s;
+        }
+        .auth-input:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+        }
+        .auth-input::placeholder {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 0.75rem;
+            height: 44px;
+            width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            border-radius: var(--radius-sm);
+            transition: color 0.2s;
+        }
+        .toggle-password:hover {
+            color: #ffffff;
+        }
+
+        /* Error Alert */
+        .auth-alert {
+            padding: 0.9rem 1rem;
+            border-radius: var(--radius-md);
+            background: rgba(185, 28, 28, 0.18);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .auth-alert.hidden {
+            display: none;
+        }
+
+        /* Submit Button */
+        .btn-primary {
+            width: 100%;
+            height: 54px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, #f4f4f5 0%, #e4e4e7 100%);
+            color: #09090b;
+            font-size: 0.85rem;
+            font-weight: 800;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.15);
+            transition: transform 0.25s, box-shadow 0.25s, background 0.25s, opacity 0.25s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(255, 255, 255, 0.25);
+            background: #ffffff;
+        }
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .auth-footnote {
+            margin-top: 1.75rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        /* ================= DASHBOARD SECTION ================= */
+        #dashboard-section {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+            position: relative;
+            z-index: 1;
+        }
+        #dashboard-section.hidden {
+            display: none;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .header-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .header-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .dashboard-title {
+            font-family: var(--font-cinzel);
+            font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #ffffff;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: var(--radius-full);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #71717a;
+        }
+        .status-badge.live .status-dot {
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+            animation: pulse-dot 2s infinite;
+        }
+        .status-badge.live {
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #a7f3d0;
+        }
+        .status-badge.connecting .status-dot {
+            background: #f59e0b;
+        }
+        .status-badge.error .status-dot {
+            background: #ef4444;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        /* User Controls in Header */
+        .user-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .user-email-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .user-email-chip i {
+            color: var(--text-muted);
+        }
+        .btn-signout {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            height: 44px;
+            padding: 0 1.25rem;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-silver);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: all 0.25s;
+        }
+        .btn-signout:hover {
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Dashboard Banner */
+        .dashboard-banner {
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-md);
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .dashboard-banner.hidden {
+            display: none;
+        }
+
+        /* ================= SUMMARY METRIC CARDS ================= */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+        @media (min-width: 1024px) {
+            .summary-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        .summary-card {
+            padding: 1.75rem 1.5rem;
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1rem;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .summary-card:hover {
+            border-color: var(--border-silver);
+            transform: translateY(-3px);
+        }
+        .summary-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .summary-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+        .summary-icon {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+        }
+        .summary-value {
+            font-family: var(--font-cinzel);
+            font-size: clamp(2rem, 4vw, 2.75rem);
+            font-weight: 700;
+            line-height: 1;
+            color: #ffffff;
+        }
+        .summary-subtext {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Specific card accents */
+        .summary-card.accepted .summary-icon { color: #34d399; }
+        .summary-card.rejected .summary-icon { color: #f87171; }
+        .summary-card.guests .summary-icon { color: #e4e4e7; }
+
+        /* ================= TOOLBAR (SEARCH, FILTERS, EXPORT) ================= */
+        .toolbar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        @media (min-width: 768px) {
+            .toolbar {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            max-width: 420px;
+        }
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+        .search-input {
+            width: 100%;
+            height: 48px;
+            padding: 0 2.5rem 0 2.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-silver);
+            border-radius: var(--radius-full);
+            color: #ffffff;
+            font-size: 16px; /* iOS zoom prevention */
+            transition: all 0.25s;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+        .search-input::placeholder {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .search-clear {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            border-radius: 50%;
+        }
+        .search-clear:hover {
+            color: #ffffff;
+        }
+        .search-clear.hidden {
+            display: none;
+        }
+
+        .actions-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Filter Chips */
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 4px;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-full);
+            overflow-x: auto;
+            max-width: 100%;
+        }
+        .filter-btn {
+            height: 38px;
+            padding: 0 1rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .filter-btn:hover {
+            color: #ffffff;
+        }
+        .filter-btn.active {
+            background: #ffffff;
+            color: #09090b;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+        }
+        .filter-btn.hidden {
+            display: none;
+        }
+        .filter-count {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: var(--radius-full);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .filter-btn.active .filter-count {
+            background: rgba(0, 0, 0, 0.15);
+            color: #000000;
+        }
+
+        /* Export Button */
+        .btn-export {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            height: 48px;
+            padding: 0 1.4rem;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-silver);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: all 0.25s;
+            white-space: nowrap;
+        }
+        .btn-export:hover:not(:disabled) {
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.2);
+        }
+        .btn-export:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            border-color: var(--border-subtle);
+        }
+
+        /* ================= DESKTOP TABLE VIEW ================= */
+        .desktop-table-container {
+            display: block;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-card);
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            background: var(--bg-card);
+        }
+        .admin-table th {
+            padding: 1.25rem 1.5rem;
+            font-family: var(--font-cinzel);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(12, 12, 16, 0.95);
+        }
+        .admin-table td {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            vertical-align: top;
+        }
+        .admin-table tbody tr {
+            transition: background 0.2s;
+        }
+        .admin-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .admin-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Column specific sizing */
+        .col-name {
+            width: 22%;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        .col-response {
+            width: 15%;
+        }
+        .col-guests {
+            width: 12%;
+        }
+        .col-message {
+            width: 33%;
+        }
+        .col-date {
+            width: 18%;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Response Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .badge-accepted {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #6ee7b7;
+        }
+        .badge-rejected {
+            background: rgba(244, 63, 94, 0.1);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: #fda4af;
+        }
+        .badge-uncategorized {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            color: #fcd34d;
+        }
+
+        .guest-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.25rem 0.7rem;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .message-cell {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+        .message-cell.empty {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* ================= MOBILE CARDS VIEW ================= */
+        .mobile-cards-container {
+            display: none;
+        }
+        @media (max-width: 767px) {
+            .desktop-table-container {
+                display: none;
+            }
+            .mobile-cards-container {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+        .response-card {
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-card);
+        }
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .card-guest-name {
+            font-family: var(--font-cinzel);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.05em;
+            word-break: break-word;
+        }
+        .card-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .card-message-box {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+        .card-message-box.empty {
+            color: var(--text-muted);
+            font-style: italic;
+            background: transparent;
+            border-color: transparent;
+            padding: 0;
+        }
+
+        /* ================= EMPTY & LOADING STATES ================= */
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .empty-state.hidden {
+            display: none;
+        }
+        .empty-icon {
+            font-size: 2.75rem;
+            color: var(--text-muted);
+            opacity: 0.5;
+            margin-bottom: 0.5rem;
+        }
+        .empty-title {
+            font-family: var(--font-cinzel);
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #ffffff;
+        }
+        .empty-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            max-width: 360px;
+        }
+
+        /* ================= ACCESSIBILITY / PREFERS-REDUCED-MOTION ================= */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient background glows -->
+    <div class="ambient-glow ambient-glow-top" aria-hidden="true"></div>
+    <div class="ambient-glow ambient-glow-bottom" aria-hidden="true"></div>
+
+    <!-- ================= INITIAL SESSION LOADER ================= -->
+    <div id="initial-loader" role="status" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <p class="loader-text">Securing session...</p>
+    </div>
+
+    <!-- ================= AUTHENTICATION VIEW ================= -->
+    <main id="auth-section" class="hidden">
+        <div class="glass-card auth-card">
+            <span class="brand-eyebrow">The 21st Chapter of Andrei</span>
+            <h1 class="auth-title">RSVP Administration</h1>
+            <div class="auth-divider" aria-hidden="true"></div>
+
+            <!-- Error Banner -->
+            <div id="auth-error" class="auth-alert hidden" role="alert" aria-live="assertive">
+                <i class="fa-solid fa-circle-exclamation text-base shrink-0" aria-hidden="true"></i>
+                <span id="auth-error-msg">Unable to sign in. Check your credentials and try again.</span>
+            </div>
+
+            <!-- Sign In Form -->
+            <form id="auth-form" class="auth-form" novalidate>
+                <div class="form-group">
+                    <label for="auth-email" class="form-label">Email Address</label>
+                    <div class="input-wrapper">
+                        <input
+                            type="email"
+                            id="auth-email"
+                            name="email"
+                            autocomplete="username"
+                            required
+                            placeholder="admin@example.com"
+                            class="auth-input"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="auth-password" class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <input
+                            type="password"
+                            id="auth-password"
+                            name="password"
+                            autocomplete="current-password"
+                            required
+                            placeholder="••••••••"
+                            class="auth-input"
+                        >
+                        <button
+                            type="button"
+                            id="toggle-password-btn"
+                            class="toggle-password"
+                            aria-label="Show password"
+                            aria-pressed="false"
+                        >
+                            <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" id="auth-submit-btn" class="btn-primary">
+                    <span id="auth-btn-text">Sign In</span>
+                    <span id="auth-btn-spinner" class="spinner" style="width: 20px; height: 20px; border-width: 2px; border-top-color: #000; display: none;" aria-hidden="true"></span>
+                </button>
+            </form>
+
+            <p class="auth-footnote">
+                <i class="fa-solid fa-shield-halved mr-1" aria-hidden="true"></i>
+                Authorized access only. Protected by client credentials.
+            </p>
+        </div>
+    </main>
+
+    <!-- ================= DASHBOARD VIEW ================= -->
+    <div id="dashboard-section" class="hidden">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-brand">
+                <span class="brand-eyebrow">The 21st Chapter of Andrei</span>
+                <div class="header-title-wrap">
+                    <h1 class="dashboard-title">RSVP Dashboard</h1>
+                    <div id="realtime-status" class="status-badge live" role="status" aria-live="polite">
+                        <span class="status-dot" aria-hidden="true"></span>
+                        <span id="status-text">Live Sync</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="user-controls">
+                <div class="user-email-chip" aria-label="Signed in user">
+                    <i class="fa-regular fa-user" aria-hidden="true"></i>
+                    <span id="user-email-display">client@example.com</span>
+                </div>
+                <button id="sign-out-btn" class="btn-signout" aria-label="Sign out of administration">
+                    <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i>
+                    <span>Sign Out</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Dashboard Error / Warning Banner -->
+        <div id="dashboard-banner" class="dashboard-banner hidden" role="alert" aria-live="polite">
+            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+            <span id="dashboard-banner-text"></span>
+        </div>
+
+        <!-- Summary Metric Cards -->
+        <section class="summary-grid" aria-label="RSVP Response Statistics">
+            <div class="glass-card summary-card">
+                <div class="summary-card-header">
+                    <span class="summary-label">Total Responses</span>
+                    <i class="fa-solid fa-users summary-icon" aria-hidden="true"></i>
+                </div>
+                <div id="summary-total" class="summary-value">0</div>
+                <span class="summary-subtext">Total received submissions</span>
+            </div>
+
+            <div class="glass-card summary-card accepted">
+                <div class="summary-card-header">
+                    <span class="summary-label">Accepted</span>
+                    <i class="fa-solid fa-circle-check summary-icon" aria-hidden="true"></i>
+                </div>
+                <div id="summary-accepted" class="summary-value">0</div>
+                <span class="summary-subtext">Joyfully attending</span>
+            </div>
+
+            <div class="glass-card summary-card rejected">
+                <div class="summary-card-header">
+                    <span class="summary-label">Rejected</span>
+                    <i class="fa-solid fa-circle-xmark summary-icon" aria-hidden="true"></i>
+                </div>
+                <div id="summary-rejected" class="summary-value">0</div>
+                <span class="summary-subtext">Regretfully declining</span>
+            </div>
+
+            <div class="glass-card summary-card guests">
+                <div class="summary-card-header">
+                    <span class="summary-label">Expected Guests</span>
+                    <i class="fa-solid fa-user-group summary-icon" aria-hidden="true"></i>
+                </div>
+                <div id="summary-guests" class="summary-value">0</div>
+                <span class="summary-subtext">Sum of accepted guest counts</span>
+            </div>
+        </section>
+
+        <!-- Toolbar: Search, Filters, CSV Export -->
+        <section class="toolbar" aria-label="Filter and Search Responses">
+            <div class="search-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+                <input
+                    type="text"
+                    id="search-input"
+                    class="search-input"
+                    placeholder="Search by guest name or message..."
+                    aria-label="Search by guest name or message"
+                >
+                <button
+                    type="button"
+                    id="search-clear-btn"
+                    class="search-clear hidden"
+                    aria-label="Clear search query"
+                >
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="actions-wrapper">
+                <div class="filter-group" role="tablist" aria-label="Attendance filter">
+                    <button type="button" class="filter-btn active" data-filter="all" role="tab" aria-selected="true">
+                        <span>All</span>
+                        <span id="count-filter-all" class="filter-count">0</span>
+                    </button>
+                    <button type="button" class="filter-btn" data-filter="accepted" role="tab" aria-selected="false">
+                        <span>Accepted</span>
+                        <span id="count-filter-accepted" class="filter-count">0</span>
+                    </button>
+                    <button type="button" class="filter-btn" data-filter="rejected" role="tab" aria-selected="false">
+                        <span>Rejected</span>
+                        <span id="count-filter-rejected" class="filter-count">0</span>
+                    </button>
+                    <button type="button" class="filter-btn hidden" data-filter="uncategorized" id="btn-filter-uncategorized" role="tab" aria-selected="false">
+                        <span>Uncategorized</span>
+                        <span id="count-filter-uncategorized" class="filter-count">0</span>
+                    </button>
+                </div>
+
+                <button type="button" id="export-csv-btn" class="btn-export" aria-label="Export filtered responses to CSV" title="Export visible responses to CSV">
+                    <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>
+                    <span>Export CSV</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Main Response Container -->
+        <section aria-label="Guest Responses List">
+            <!-- Desktop Table View -->
+            <div class="desktop-table-container">
+                <table class="admin-table" aria-label="Guest RSVP Responses Table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="col-name">Guest Name</th>
+                            <th scope="col" class="col-response">Response</th>
+                            <th scope="col" class="col-guests">Guests</th>
+                            <th scope="col" class="col-message">Message</th>
+                            <th scope="col" class="col-date">Submitted At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="responses-tbody">
+                        <!-- Populated safely via DOM methods -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Cards View -->
+            <div id="mobile-cards-list" class="mobile-cards-container">
+                <!-- Populated safely via DOM methods -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state hidden glass-card" style="margin-top: 1rem;">
+                <i class="fa-solid fa-inbox empty-icon" aria-hidden="true"></i>
+                <h2 class="empty-title">No Responses Found</h2>
+                <p id="empty-state-desc" class="empty-desc">No RSVP submissions match your current search or filter criteria.</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- ================= FIREBASE & DASHBOARD ES MODULE SCRIPT ================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+            signOut,
+            setPersistence,
+            browserSessionPersistence
+        } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import {
+            getFirestore,
+            collection,
+            onSnapshot
+        } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // ================= FIREBASE CONFIGURATION =================
+        // Reused exactly from the existing project configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAMR8v0XG3eGYd8M0_uY__HtjV2V18G0HE",
+            authDomain: "website-invitation-8b95b.firebaseapp.com",
+            projectId: "website-invitation-8b95b",
+            storageBucket: "website-invitation-8b95b.firebasestorage.app",
+            messagingSenderId: "164487860042",
+            appId: "1:164487860042:web:eb3f2674949ff49e32bbb3",
+            measurementId: "G-C9ZKJ6LBWL"
+        };
+
+        // Authorized Client UID (UX guard; Firestore Security Rules provide primary boundary)
+        const AUTHORIZED_CLIENT_UID = "Si6lwDbTOWVkrtJkkAXChcudI0u2";
+
+        // Initialize Firebase services
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // ================= STATE VARIABLES =================
+        let activeUnsubscribe = null;
+        let loadedRsvps = [];
+        let currentFilter = 'all'; // 'all' | 'accepted' | 'rejected' | 'uncategorized'
+        let currentSearchQuery = '';
+        let isSigningIn = false;
+
+        // ================= DOM ELEMENTS =================
+        const initialLoader = document.getElementById('initial-loader');
+        const authSection = document.getElementById('auth-section');
+        const dashboardSection = document.getElementById('dashboard-section');
+
+        // Auth Form Elements
+        const authForm = document.getElementById('auth-form');
+        const authEmail = document.getElementById('auth-email');
+        const authPassword = document.getElementById('auth-password');
+        const togglePasswordBtn = document.getElementById('toggle-password-btn');
+        const authSubmitBtn = document.getElementById('auth-submit-btn');
+        const authBtnText = document.getElementById('auth-btn-text');
+        const authBtnSpinner = document.getElementById('auth-btn-spinner');
+        const authError = document.getElementById('auth-error');
+        const authErrorMsg = document.getElementById('auth-error-msg');
+
+        // Dashboard Elements
+        const userEmailDisplay = document.getElementById('user-email-display');
+        const signOutBtn = document.getElementById('sign-out-btn');
+        const realtimeStatus = document.getElementById('realtime-status');
+        const statusText = document.getElementById('status-text');
+        const dashboardBanner = document.getElementById('dashboard-banner');
+        const dashboardBannerText = document.getElementById('dashboard-banner-text');
+
+        // Summary Metric Elements
+        const summaryTotal = document.getElementById('summary-total');
+        const summaryAccepted = document.getElementById('summary-accepted');
+        const summaryRejected = document.getElementById('summary-rejected');
+        const summaryGuests = document.getElementById('summary-guests');
+
+        // Toolbar Elements
+        const searchInput = document.getElementById('search-input');
+        const searchClearBtn = document.getElementById('search-clear-btn');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const countFilterAll = document.getElementById('count-filter-all');
+        const countFilterAccepted = document.getElementById('count-filter-accepted');
+        const countFilterRejected = document.getElementById('count-filter-rejected');
+        const countFilterUncategorized = document.getElementById('count-filter-uncategorized');
+        const btnFilterUncategorized = document.getElementById('btn-filter-uncategorized');
+        const exportCsvBtn = document.getElementById('export-csv-btn');
+
+        // Response Display Elements
+        const responsesTbody = document.getElementById('responses-tbody');
+        const mobileCardsList = document.getElementById('mobile-cards-list');
+        const emptyState = document.getElementById('empty-state');
+        const emptyStateDesc = document.getElementById('empty-state-desc');
+
+        // ================= DATA NORMALIZATION HELPERS =================
+
+        /**
+         * Authoritative Attendance Mapping:
+         * Confirmed positive: 'yes' (from form option value)
+         * Confirmed negative: 'no'  (from form option value)
+         * Aliases supported safely: 'accept', 'accepted', 'reject', 'rejected', 'decline', 'declined'
+         * Unknown values mapped to 'uncategorized'.
+         */
+        function normalizeAttendance(raw) {
+            if (typeof raw !== 'string') return 'uncategorized';
+            const val = raw.trim().toLowerCase();
+            if (val === 'yes' || val === 'accept' || val === 'accepted' || val === 'joyfully accepts') {
+                return 'accepted';
+            }
+            if (val === 'no' || val === 'reject' || val === 'rejected' || val === 'decline' || val === 'declined' || val === 'regretfully declines') {
+                return 'rejected';
+            }
+            return 'uncategorized';
+        }
+
+        /**
+         * Safe Firestore & ISO Timestamp Normalizer:
+         * Handles Firestore Timestamp objects with .toDate(), .toMillis(), or .seconds
+         * Handles JS Date objects, ISO strings, numeric timestamps (seconds or ms),
+         * unresolved server timestamps, and invalid or missing values.
+         */
+        function parseTimestamp(raw) {
+            if (raw === null || raw === undefined || raw === '') {
+                return null;
+            }
+            if (typeof raw === 'object') {
+                if (typeof raw.toDate === 'function') {
+                    try {
+                        const d = raw.toDate();
+                        if (d instanceof Date && !isNaN(d.getTime())) return d;
+                    } catch (e) {}
+                }
+                if (typeof raw.toMillis === 'function') {
+                    try {
+                        const ms = raw.toMillis();
+                        const d = new Date(ms);
+                        if (!isNaN(d.getTime())) return d;
+                    } catch (e) {}
+                }
+                if (typeof raw.seconds === 'number' && !isNaN(raw.seconds)) {
+                    const ms = raw.seconds * 1000 + (typeof raw.nanoseconds === 'number' ? raw.nanoseconds / 1e6 : 0);
+                    const d = new Date(ms);
+                    if (!isNaN(d.getTime())) return d;
+                }
+                if (raw instanceof Date) {
+                    if (!isNaN(raw.getTime())) return raw;
+                }
+            }
+            if (typeof raw === 'number') {
+                if (!isNaN(raw) && isFinite(raw)) {
+                    const ms = raw < 1e11 ? raw * 1000 : raw;
+                    const d = new Date(ms);
+                    if (!isNaN(d.getTime())) return d;
+                }
+            }
+            if (typeof raw === 'string') {
+                const trimmed = raw.trim();
+                if (!trimmed) return null;
+                if (/^\d+$/.test(trimmed)) {
+                    const num = Number(trimmed);
+                    if (isFinite(num)) {
+                        const ms = num < 1e11 ? num * 1000 : num;
+                        const d = new Date(ms);
+                        if (!isNaN(d.getTime())) return d;
+                    }
+                }
+                const d = new Date(trimmed);
+                if (!isNaN(d.getTime())) return d;
+            }
+            return null;
+        }
+
+        /**
+         * Formats date for human display
+         */
+        function formatDisplayDate(dateObj) {
+            if (!dateObj) return 'Date unavailable';
+            try {
+                return dateObj.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            } catch (e) {
+                return dateObj.toISOString();
+            }
+        }
+
+        /**
+         * Formats date for CSV export
+         */
+        function formatCSVDate(dateObj) {
+            if (!dateObj) return 'Date unavailable';
+            return dateObj.toISOString();
+        }
+
+        /**
+         * Newest-first date comparator.
+         * Missing or invalid dates sort strictly after valid dates.
+         */
+        function compareTimestampsDesc(dateA, dateB) {
+            if (dateA && dateB) {
+                return dateB.getTime() - dateA.getTime();
+            }
+            if (dateA && !dateB) return -1;
+            if (!dateA && dateB) return 1;
+            return 0;
+        }
+
+        /**
+         * CSV field sanitizer with spreadsheet formula injection defense
+         * Neutralizes =, +, -, @, \t, \r by prefixing with a single quote
+         * Follows RFC 4180 quote escaping
+         */
+        function sanitizeCSVField(val) {
+            let str = (val === null || val === undefined) ? '' : String(val);
+            if (/^[=+\-@\t\r]/.test(str)) {
+                str = "'" + str;
+            }
+            return '"' + str.replace(/"/g, '""') + '"';
+        }
+
+        // ================= AUTHENTICATION & SESSION FLOW =================
+
+        // Configure session persistence where supported
+        try {
+            setPersistence(auth, browserSessionPersistence).catch(() => {});
+        } catch (e) {}
+
+        // Central Auth State Observer
+        onAuthStateChanged(auth, async (user) => {
+            initialLoader.classList.add('hidden');
+
+            if (user) {
+                // UID Authorization Guard:
+                // Verify user matches authorized client UID before querying Firestore
+                if (user.uid === AUTHORIZED_CLIENT_UID) {
+                    showDashboardView(user.email);
+                    startRealtimeListener();
+                } else {
+                    // Unauthorized account: immediately sign out and notify
+                    stopRealtimeListener();
+                    clearDashboardData();
+                    try {
+                        await signOut(auth);
+                    } catch (e) {}
+                    showAuthError("This account is not authorized to view RSVP responses.");
+                    showAuthView();
+                }
+            } else {
+                // Unauthenticated visitor
+                stopRealtimeListener();
+                clearDashboardData();
+                showAuthView();
+            }
+        });
+
+        function showAuthView() {
+            dashboardSection.classList.add('hidden');
+            authSection.classList.remove('hidden');
+            setAuthSubmitting(false);
+        }
+
+        function showDashboardView(email) {
+            authSection.classList.add('hidden');
+            dashboardSection.classList.remove('hidden');
+            userEmailDisplay.textContent = email || 'Authorized Client';
+            hideDashboardBanner();
+        }
+
+        function showAuthError(message) {
+            authErrorMsg.textContent = message;
+            authError.classList.remove('hidden');
+        }
+
+        function clearAuthError() {
+            authError.classList.add('hidden');
+            authErrorMsg.textContent = '';
+        }
+
+        function setAuthSubmitting(submitting) {
+            isSigningIn = submitting;
+            authSubmitBtn.disabled = submitting;
+            if (submitting) {
+                authBtnText.textContent = "Signing In...";
+                authBtnSpinner.style.display = "inline-block";
+            } else {
+                authBtnText.textContent = "Sign In";
+                authBtnSpinner.style.display = "none";
+            }
+        }
+
+        // Toggle Password Visibility
+        togglePasswordBtn.addEventListener('click', () => {
+            const isPassword = authPassword.type === 'password';
+            authPassword.type = isPassword ? 'text' : 'password';
+            togglePasswordBtn.setAttribute('aria-pressed', isPassword ? 'true' : 'false');
+            const eyeIcon = togglePasswordBtn.querySelector('i');
+            if (eyeIcon) {
+                eyeIcon.className = isPassword ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+            }
+        });
+
+        // Sign In Form Submission
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (isSigningIn) return;
+
+            const email = authEmail.value.trim();
+            const password = authPassword.value;
+
+            if (!email || !password) {
+                showAuthError("Please enter both email and password.");
+                return;
+            }
+
+            setAuthSubmitting(true);
+            clearAuthError();
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                // onAuthStateChanged will handle UID check and view transition
+            } catch (error) {
+                // Never expose raw Firebase error details or credentials to users
+                showAuthError("Unable to sign in. Check your credentials and try again.");
+                setAuthSubmitting(false);
+            }
+        });
+
+        // Sign Out Button
+        signOutBtn.addEventListener('click', async () => {
+            stopRealtimeListener();
+            clearDashboardData();
+            try {
+                await signOut(auth);
+            } catch (e) {}
+            showAuthView();
+        });
+
+        // ================= FIRESTORE REALTIME LISTENER =================
+
+        function setRealtimeStatus(state, label) {
+            realtimeStatus.className = `status-badge ${state}`;
+            statusText.textContent = label;
+        }
+
+        function showDashboardBanner(text) {
+            dashboardBannerText.textContent = text;
+            dashboardBanner.classList.remove('hidden');
+        }
+
+        function hideDashboardBanner() {
+            dashboardBanner.classList.add('hidden');
+            dashboardBannerText.textContent = '';
+        }
+
+        function stopRealtimeListener() {
+            if (activeUnsubscribe) {
+                try {
+                    activeUnsubscribe();
+                } catch (e) {}
+                activeUnsubscribe = null;
+            }
+        }
+
+        function startRealtimeListener() {
+            stopRealtimeListener();
+            setRealtimeStatus('connecting', 'Connecting...');
+
+            try {
+                activeUnsubscribe = onSnapshot(collection(db, "rsvps"), (snapshot) => {
+                    const parsedRecords = [];
+
+                    snapshot.forEach((docSnap) => {
+                        const data = docSnap.data() || {};
+                        const parsedDate = parseTimestamp(data.timestamp);
+                        const normalizedAtt = normalizeAttendance(data.attendance);
+
+                        // Safe numeric parsing for guest count (handle string or number)
+                        let guestCount = parseInt(data.guests, 10);
+                        if (isNaN(guestCount) || guestCount < 0) {
+                            guestCount = normalizedAtt === 'rejected' ? 0 : 1;
+                        }
+
+                        parsedRecords.push({
+                            id: docSnap.id,
+                            name: (typeof data.name === 'string' && data.name.trim()) ? data.name.trim() : 'Anonymous Guest',
+                            attendance: normalizedAtt, // 'accepted' | 'rejected' | 'uncategorized'
+                            rawAttendance: data.attendance || '',
+                            guests: guestCount,
+                            message: (typeof data.message === 'string' && data.message.trim()) ? data.message.trim() : '',
+                            date: parsedDate,
+                            dateDisplay: formatDisplayDate(parsedDate),
+                            dateCSV: formatCSVDate(parsedDate)
+                        });
+                    });
+
+                    // Newest-first in-memory sorting
+                    parsedRecords.sort((a, b) => compareTimestampsDesc(a.date, b.date));
+
+                    loadedRsvps = parsedRecords;
+                    setRealtimeStatus('live', 'Live Sync');
+                    hideDashboardBanner();
+                    updateDashboard();
+
+                }, (error) => {
+                    if (error && error.code === 'permission-denied') {
+                        setRealtimeStatus('error', 'Access Denied');
+                        showDashboardBanner("Permission denied: Your account lacks Firestore read permissions for the RSVP collection.");
+                    } else {
+                        setRealtimeStatus('error', 'Sync Paused');
+                        showDashboardBanner("Connection lost or network error. Attempting reconnection...");
+                    }
+                });
+            } catch (err) {
+                setRealtimeStatus('error', 'Sync Error');
+                showDashboardBanner("Failed to initialize database subscription.");
+            }
+        }
+
+        function clearDashboardData() {
+            loadedRsvps = [];
+            responsesTbody.textContent = '';
+            mobileCardsList.textContent = '';
+            summaryTotal.textContent = '0';
+            summaryAccepted.textContent = '0';
+            summaryRejected.textContent = '0';
+            summaryGuests.textContent = '0';
+            countFilterAll.textContent = '0';
+            countFilterAccepted.textContent = '0';
+            countFilterRejected.textContent = '0';
+            countFilterUncategorized.textContent = '0';
+            btnFilterUncategorized.classList.add('hidden');
+            searchInput.value = '';
+            currentSearchQuery = '';
+            currentFilter = 'all';
+            updateActiveFilterButton();
+        }
+
+        // ================= DASHBOARD RENDERING & FILTERING =================
+
+        function getVisibleRecords() {
+            return loadedRsvps.filter((item) => {
+                // Filter match
+                if (currentFilter !== 'all' && item.attendance !== currentFilter) {
+                    return false;
+                }
+                // Search match (case-insensitive across name and message)
+                if (currentSearchQuery) {
+                    const q = currentSearchQuery.toLowerCase();
+                    const nameMatch = item.name.toLowerCase().includes(q);
+                    const msgMatch = item.message.toLowerCase().includes(q);
+                    if (!nameMatch && !msgMatch) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+        }
+
+        function updateDashboard() {
+            // 1. Calculate overall metrics
+            const total = loadedRsvps.length;
+            let accepted = 0;
+            let rejected = 0;
+            let uncategorized = 0;
+            let expectedGuests = 0;
+
+            loadedRsvps.forEach((item) => {
+                if (item.attendance === 'accepted') {
+                    accepted++;
+                    expectedGuests += item.guests;
+                } else if (item.attendance === 'rejected') {
+                    rejected++;
+                } else {
+                    uncategorized++;
+                }
+            });
+
+            // 2. Update summary metric cards
+            summaryTotal.textContent = String(total);
+            summaryAccepted.textContent = String(accepted);
+            summaryRejected.textContent = String(rejected);
+            summaryGuests.textContent = String(expectedGuests);
+
+            // 3. Update filter tab counts
+            countFilterAll.textContent = String(total);
+            countFilterAccepted.textContent = String(accepted);
+            countFilterRejected.textContent = String(rejected);
+            countFilterUncategorized.textContent = String(uncategorized);
+
+            // Dynamically show/hide uncategorized filter button
+            if (uncategorized > 0) {
+                btnFilterUncategorized.classList.remove('hidden');
+            } else {
+                btnFilterUncategorized.classList.add('hidden');
+                if (currentFilter === 'uncategorized') {
+                    currentFilter = 'all';
+                    updateActiveFilterButton();
+                }
+            }
+
+            // 4. Render visible records
+            const visible = getVisibleRecords();
+            renderResponses(visible);
+
+            // 5. Update Export CSV button state
+            if (visible.length === 0) {
+                exportCsvBtn.disabled = true;
+                exportCsvBtn.title = "No responses to export";
+            } else {
+                exportCsvBtn.disabled = false;
+                exportCsvBtn.title = `Export ${visible.length} response(s) to CSV`;
+            }
+        }
+
+        /**
+         * Pure XSS-safe DOM renderer.
+         * Absolutely zero innerHTML used on untrusted values.
+         */
+        function renderResponses(records) {
+            responsesTbody.textContent = '';
+            mobileCardsList.textContent = '';
+
+            if (records.length === 0) {
+                emptyState.classList.remove('hidden');
+                if (loadedRsvps.length === 0) {
+                    emptyStateDesc.textContent = "No RSVP submissions have been recorded in the database yet.";
+                } else {
+                    emptyStateDesc.textContent = "No RSVP submissions match your current search or filter criteria.";
+                }
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            // Populate both Desktop Table and Mobile Stacked Cards
+            records.forEach((item) => {
+                // --- Desktop Table Row ---
+                const tr = document.createElement('tr');
+
+                // Name TD
+                const tdName = document.createElement('td');
+                tdName.className = 'col-name';
+                tdName.textContent = item.name;
+                tr.appendChild(tdName);
+
+                // Response TD
+                const tdResponse = document.createElement('td');
+                tdResponse.className = 'col-response';
+                const badge = createResponseBadge(item.attendance);
+                tdResponse.appendChild(badge);
+                tr.appendChild(tdResponse);
+
+                // Guests TD
+                const tdGuests = document.createElement('td');
+                tdGuests.className = 'col-guests';
+                const pill = document.createElement('span');
+                pill.className = 'guest-pill';
+                const pillIcon = document.createElement('i');
+                pillIcon.className = 'fa-solid fa-user-check';
+                pillIcon.setAttribute('aria-hidden', 'true');
+                const pillText = document.createTextNode(` ${item.guests} Guest${item.guests === 1 ? '' : 's'}`);
+                pill.appendChild(pillIcon);
+                pill.appendChild(pillText);
+                tdGuests.appendChild(pill);
+                tr.appendChild(tdGuests);
+
+                // Message TD
+                const tdMsg = document.createElement('td');
+                tdMsg.className = 'col-message message-cell';
+                if (item.message) {
+                    tdMsg.textContent = item.message;
+                } else {
+                    tdMsg.textContent = 'No message';
+                    tdMsg.classList.add('empty');
+                }
+                tr.appendChild(tdMsg);
+
+                // Date TD
+                const tdDate = document.createElement('td');
+                tdDate.className = 'col-date';
+                tdDate.textContent = item.dateDisplay;
+                tr.appendChild(tdDate);
+
+                responsesTbody.appendChild(tr);
+
+                // --- Mobile Card ---
+                const card = document.createElement('article');
+                card.className = 'response-card';
+
+                // Top: Name and Badge
+                const cardTop = document.createElement('div');
+                cardTop.className = 'card-top';
+
+                const cardName = document.createElement('h2');
+                cardName.className = 'card-guest-name';
+                cardName.textContent = item.name;
+
+                const cardBadge = createResponseBadge(item.attendance);
+
+                cardTop.appendChild(cardName);
+                cardTop.appendChild(cardBadge);
+                card.appendChild(cardTop);
+
+                // Meta row: Guest count & Submitted at
+                const metaRow = document.createElement('div');
+                metaRow.className = 'card-meta-row';
+
+                const cardGuests = document.createElement('span');
+                cardGuests.className = 'guest-pill';
+                cardGuests.textContent = `${item.guests} Guest${item.guests === 1 ? '' : 's'}`;
+
+                const cardDate = document.createElement('span');
+                const dateIcon = document.createElement('i');
+                dateIcon.className = 'fa-regular fa-clock mr-1';
+                dateIcon.setAttribute('aria-hidden', 'true');
+                cardDate.appendChild(dateIcon);
+                cardDate.appendChild(document.createTextNode(item.dateDisplay));
+
+                metaRow.appendChild(cardGuests);
+                metaRow.appendChild(cardDate);
+                card.appendChild(metaRow);
+
+                // Message Box
+                const msgBox = document.createElement('div');
+                msgBox.className = 'card-message-box';
+                if (item.message) {
+                    msgBox.textContent = item.message;
+                } else {
+                    msgBox.textContent = 'No message provided';
+                    msgBox.classList.add('empty');
+                }
+                card.appendChild(msgBox);
+
+                mobileCardsList.appendChild(card);
+            });
+        }
+
+        function createResponseBadge(status) {
+            const span = document.createElement('span');
+            const icon = document.createElement('i');
+            icon.setAttribute('aria-hidden', 'true');
+
+            if (status === 'accepted') {
+                span.className = 'badge badge-accepted';
+                icon.className = 'fa-solid fa-circle-check mr-1';
+                span.appendChild(icon);
+                span.appendChild(document.createTextNode('Accepted'));
+            } else if (status === 'rejected') {
+                span.className = 'badge badge-rejected';
+                icon.className = 'fa-solid fa-circle-xmark mr-1';
+                span.appendChild(icon);
+                span.appendChild(document.createTextNode('Rejected'));
+            } else {
+                span.className = 'badge badge-uncategorized';
+                icon.className = 'fa-solid fa-circle-question mr-1';
+                span.appendChild(icon);
+                span.appendChild(document.createTextNode('Uncategorized'));
+            }
+            return span;
+        }
+
+        // ================= SEARCH & FILTER EVENT LISTENERS =================
+
+        searchInput.addEventListener('input', (e) => {
+            currentSearchQuery = e.target.value.trim();
+            if (currentSearchQuery) {
+                searchClearBtn.classList.remove('hidden');
+            } else {
+                searchClearBtn.classList.add('hidden');
+            }
+            updateDashboard();
+        });
+
+        searchClearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            currentSearchQuery = '';
+            searchClearBtn.classList.add('hidden');
+            searchInput.focus();
+            updateDashboard();
+        });
+
+        filterButtons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const targetFilter = btn.getAttribute('data-filter');
+                if (targetFilter && currentFilter !== targetFilter) {
+                    currentFilter = targetFilter;
+                    updateActiveFilterButton();
+                    updateDashboard();
+                }
+            });
+        });
+
+        function updateActiveFilterButton() {
+            filterButtons.forEach((b) => {
+                const f = b.getAttribute('data-filter');
+                if (f === currentFilter) {
+                    b.classList.add('active');
+                    b.setAttribute('aria-selected', 'true');
+                } else {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                }
+            });
+        }
+
+        // ================= CSV EXPORT =================
+
+        exportCsvBtn.addEventListener('click', () => {
+            const visibleRecords = getVisibleRecords();
+            if (visibleRecords.length === 0) {
+                alert("No responses available to export.");
+                return;
+            }
+
+            // Headers
+            const headers = ["Name", "Response", "Guest Count", "Message", "Submitted At"];
+            const csvRows = [];
+            csvRows.push(headers.map(sanitizeCSVField).join(","));
+
+            // Records
+            visibleRecords.forEach((item) => {
+                let responseLabel = "Uncategorized";
+                if (item.attendance === 'accepted') responseLabel = "Accepted";
+                if (item.attendance === 'rejected') responseLabel = "Rejected";
+
+                const row = [
+                    sanitizeCSVField(item.name),
+                    sanitizeCSVField(responseLabel),
+                    sanitizeCSVField(item.guests),
+                    sanitizeCSVField(item.message || "No message"),
+                    sanitizeCSVField(item.dateCSV)
+                ];
+                csvRows.push(row.join(","));
+            });
+
+            const csvContent = "\uFEFF" + csvRows.join("\r\n"); // UTF-8 BOM for Excel compatibility
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const downloadLink = document.createElement("a");
+            const dateStr = new Date().toISOString().slice(0, 10);
+
+            downloadLink.href = url;
+            downloadLink.download = `andrei-rsvp-responses-${dateStr}.csv`;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+
+            setTimeout(() => {
+                URL.revokeObjectURL(url);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
